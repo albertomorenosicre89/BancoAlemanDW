@@ -4,7 +4,9 @@ import com.dws.challenge.domain.Account;
 import com.dws.challenge.exception.DuplicateAccountIdException;
 import org.springframework.stereotype.Repository;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -26,9 +28,24 @@ public class AccountsRepositoryInMemory implements AccountsRepository {
         return accounts.get(accountId);
     }
 
-    @Override
-    public Account updateAccount(Account account) {
+    private Account updateAccount(Account account) {
         return accounts.replace(account.getAccountId(), account);
+    }
+
+    @Override
+    public boolean updateAccounts(Account accountFrom,Account accountTo) {
+        Set<String> keys = accounts.keySet();
+        Iterator<String> itr = keys.iterator();
+
+        while (itr.hasNext()) {
+            String key = itr.next();
+            if(key.equals(accountFrom.getAccountId())){
+                updateAccount(accountFrom);
+            }else if(key.equals(accountTo.getAccountId())){
+                updateAccount(accountTo);
+            }
+        }
+        return true;
     }
 
     @Override

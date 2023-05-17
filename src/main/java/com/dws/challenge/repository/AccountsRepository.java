@@ -9,7 +9,7 @@ public interface AccountsRepository {
 
   Account getAccount(String accountId);
 
-  Account updateAccount(Account account);
+  boolean updateAccounts(Account accountFrom,Account accountTo);
 
   void clearAccounts();
 }

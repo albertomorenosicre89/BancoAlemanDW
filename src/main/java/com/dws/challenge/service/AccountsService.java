@@ -44,8 +44,7 @@ public class AccountsService {
     if(accountFrom.getBalance().compareTo(amountBD)>=0){
       accountFrom.setBalance(accountFrom.getBalance().subtract(amountBD));
       accountTo.setBalance(accountTo.getBalance().add(amountBD));
-      this.accountsRepository.updateAccount(accountFrom);
-      this.accountsRepository.updateAccount(accountTo);
+      this.accountsRepository.updateAccounts(accountFrom,accountTo);
       emailNotificationService.notifyAboutTransfer(accountFrom, "You have done a transfer from this account to the account ID "+accountToId+ " with an amount of "+amount);
       emailNotificationService.notifyAboutTransfer(accountTo, "You have received a transfer in this account from the account ID "+accountFromId+ " with an amount of "+amount);
       return null;
