@@ -49,8 +49,8 @@ class AccountsServiceTest {
   void transferMoney_success() {
     String uniqueIdFrom = "IdFrom-1";
     Account accountFrom = new Account(uniqueIdFrom);
-    String uniqueIdTo = "IdTo-2";
     accountFrom.setBalance(BigDecimal.valueOf(3.4));
+    String uniqueIdTo = "IdTo-2";
     Account accountTo = new Account(uniqueIdTo);
     this.accountsService.createAccount(accountFrom);
     this.accountsService.createAccount(accountTo);
@@ -70,7 +70,7 @@ class AccountsServiceTest {
   @Test
   void transferMoney_accountToNotExists() {
     String uniqueIdFrom = "Id-4";
-    Account accountFrom = new Account(uniqueIdFrom);
+    Account accountFrom = new Account(uniqueIdFrom,new BigDecimal(1000));
     this.accountsService.createAccount(accountFrom);
     String result = this.accountsService.transferMoney(accountFrom.getAccountId(), "2", 3.4);
     assertEquals("Account to with id 2 not found!" , result);

@@ -4,6 +4,7 @@ import com.dws.challenge.domain.Account;
 import com.dws.challenge.exception.DuplicateAccountIdException;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -28,23 +29,42 @@ public class AccountsRepositoryInMemory implements AccountsRepository {
         return accounts.get(accountId);
     }
 
+    //https://www.baeldung.com/concurrenthashmap-reading-and-writing
     private Account updateAccount(Account accountWithNewBalance) {
         return accounts.compute(accountWithNewBalance.getAccountId(), (k,account) -> account = accountWithNewBalance);
     }
 
     @Override
-    public boolean updateAccounts(Account accountFrom,Account accountTo) {
+    public String changeBalances(String accountFromId , String accountToId , Double amount) {
         Iterator<String> itr = accounts.keySet().iterator();
-
+        BigDecimal amountBD = BigDecimal.valueOf(amount);
+        Account accountFrom = null;
+        Account accountTo = null;
         while (itr.hasNext()) {
             String key = itr.next();
-            if(key.equals(accountFrom.getAccountId())){
+            if(key.equals(accountFromId)){
+                accountFrom = this.getAccount(accountFromId);
+                if(accountFrom.getBalance().compareTo(amountBD)<0){
+                    return "The amount "+amount+" is lower than the current balance in the from account which has "+accountFrom.getBalance();
+                }
+                accountFrom.setBalance(accountFrom.getBalance().subtract(amountBD));
+            }else if(key.equals(accountToId)){
+                accountTo = this.getAccount(accountToId);
+                accountTo.setBalance(accountTo.getBalance().add(amountBD));
+            }
+            if(accountFrom!=null && accountFrom.getBalance().compareTo(amountBD)>=0 && accountTo!=null){
                 updateAccount(accountFrom);
-            }else if(key.equals(accountTo.getAccountId())){
                 updateAccount(accountTo);
+                return null;
             }
         }
-        return true;
+        if(accountFrom==null){
+            return "Account from with id " + accountFromId + " not found!";
+        }
+        if(accountTo==null){
+            return "Account to with id " + accountToId + " not found!";
+        }
+        return null;
     }
 
     @Override

@@ -9,7 +9,7 @@ public interface AccountsRepository {
 
   Account getAccount(String accountId);
 
-  boolean updateAccounts(Account accountFrom,Account accountTo);
+  String changeBalances(String accountFromId , String accountToId , Double amount);
 
   void clearAccounts();
 }

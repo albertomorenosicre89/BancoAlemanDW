@@ -6,8 +6,6 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 @Service
 public class AccountsService {
 
@@ -32,24 +30,15 @@ public class AccountsService {
   }
 
   public String transferMoney(String accountFromId , String accountToId , Double amount) {
-    Account accountFrom = this.accountsRepository.getAccount(accountFromId);
-    if(accountFrom==null){
-      return "Account from with id " + accountFromId + " not found!";
-    }
-    Account accountTo = this.accountsRepository.getAccount(accountToId);
-    if(accountTo==null){
-      return "Account to with id " + accountToId + " not found!";
-    }
-    BigDecimal amountBD = BigDecimal.valueOf(amount);
-    if(accountFrom.getBalance().compareTo(amountBD)>=0){
-      accountFrom.setBalance(accountFrom.getBalance().subtract(amountBD));
-      accountTo.setBalance(accountTo.getBalance().add(amountBD));
-      this.accountsRepository.updateAccounts(accountFrom,accountTo);
+    String result = this.accountsRepository.changeBalances(accountFromId , accountToId , amount);
+    if(result==null){
+      Account accountFrom = this.getAccount(accountFromId);
+      Account accountTo = this.getAccount(accountToId);
       notificationService.notifyAboutTransfer(accountFrom, "You have done a transfer from this account to the account ID "+accountToId+ " with an amount of "+amount);
       notificationService.notifyAboutTransfer(accountTo, "You have received a transfer in this account from the account ID "+accountFromId+ " with an amount of "+amount);
       return null;
     }else{
-      return "The amount "+amount+" is lower than the current balance in the from account which has "+accountFrom.getBalance();
+      return result;
     }
   }
 
