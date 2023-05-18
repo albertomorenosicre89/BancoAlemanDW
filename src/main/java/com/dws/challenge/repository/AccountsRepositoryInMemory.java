@@ -28,8 +28,8 @@ public class AccountsRepositoryInMemory implements AccountsRepository {
         return accounts.get(accountId);
     }
 
-    private Account updateAccount(Account account) {
-        return accounts.put(account.getAccountId(), account);
+    private Account updateAccount(Account accountWithNewBalance) {
+        return accounts.compute(accountWithNewBalance.getAccountId(), (k,account) -> account = accountWithNewBalance);
     }
 
     @Override
