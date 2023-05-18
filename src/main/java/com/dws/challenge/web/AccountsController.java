@@ -45,7 +45,7 @@ public class AccountsController {
 
   @PutMapping(path = "/{accountFromId}/{accountToId}/{amount}")
   public ResponseEntity<Object> transferMoney(@Valid @PathVariable String accountFromId , @Valid @PathVariable String accountToId , @Valid @PathVariable Double amount) {
-    log.info("Transfer money {}", accountFromId, accountToId, amount);
+    log.info("Transfer money with accountFromId {},accountToId {} and amount {}", accountFromId, accountToId, amount);
     String result = accountsService.transferMoney( accountFromId, accountToId, amount);
     return new ResponseEntity<>(result, HttpStatus.OK);
   }

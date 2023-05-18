@@ -15,12 +15,12 @@ public class AccountsService {
   private final AccountsRepository accountsRepository;
 
   @Getter
-  private final EmailNotificationService emailNotificationService;
+  private final NotificationService notificationService;
 
   @Autowired
-  public AccountsService(AccountsRepository accountsRepository, EmailNotificationService emailNotificationService) {
+  public AccountsService(AccountsRepository accountsRepository, NotificationService notificationService) {
     this.accountsRepository = accountsRepository;
-    this.emailNotificationService = emailNotificationService;
+    this.notificationService = notificationService;
   }
 
   public void createAccount(Account account) {
@@ -45,8 +45,8 @@ public class AccountsService {
       accountFrom.setBalance(accountFrom.getBalance().subtract(amountBD));
       accountTo.setBalance(accountTo.getBalance().add(amountBD));
       this.accountsRepository.updateAccounts(accountFrom,accountTo);
-      emailNotificationService.notifyAboutTransfer(accountFrom, "You have done a transfer from this account to the account ID "+accountToId+ " with an amount of "+amount);
-      emailNotificationService.notifyAboutTransfer(accountTo, "You have received a transfer in this account from the account ID "+accountFromId+ " with an amount of "+amount);
+      notificationService.notifyAboutTransfer(accountFrom, "You have done a transfer from this account to the account ID "+accountToId+ " with an amount of "+amount);
+      notificationService.notifyAboutTransfer(accountTo, "You have received a transfer in this account from the account ID "+accountFromId+ " with an amount of "+amount);
       return null;
     }else{
       return "The amount "+amount+" is lower than the current balance in the from account which has "+accountFrom.getBalance();
