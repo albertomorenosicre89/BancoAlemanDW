@@ -29,13 +29,12 @@ public class AccountsRepositoryInMemory implements AccountsRepository {
     }
 
     private Account updateAccount(Account account) {
-        return accounts.replace(account.getAccountId(), account);
+        return accounts.put(account.getAccountId(), account);
     }
 
     @Override
     public boolean updateAccounts(Account accountFrom,Account accountTo) {
-        Set<String> keys = accounts.keySet();
-        Iterator<String> itr = keys.iterator();
+        Iterator<String> itr = accounts.keySet().iterator();
 
         while (itr.hasNext()) {
             String key = itr.next();
